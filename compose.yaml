@@ -1,0 +1,8 @@
+﻿services:
+  soap.webservice.api:
+    image: soap.webservice.api
+    build:
+      context: .
+      dockerfile: SOAP.WebService.API/Dockerfile
+    ports:
+      - "8080:8080"
