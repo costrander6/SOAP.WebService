@@ -36,7 +36,6 @@ public class AuthController(IAmazonCognitoIdentityProvider cognitoService,
         };
         
         var response = await cognitoService.InitiateAuthAsync(authRequest);
-        Console.WriteLine($"Result Challenge is : {response.ChallengeName}");
 
         return response.AuthenticationResult.IdToken;
     }
