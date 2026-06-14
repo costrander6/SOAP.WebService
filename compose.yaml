@@ -6,3 +6,13 @@
       dockerfile: SOAP.WebService.API/Dockerfile
     ports:
       - "8080:8080"
+    
+  db:
+    image: postgres:14.23-trixie
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./initdb/init.sql:/docker-entrypoint-initdb.d/init.sql
