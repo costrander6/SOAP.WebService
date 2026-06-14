@@ -1,6 +1,10 @@
+using Amazon;
+using Amazon.CognitoIdentityProvider;
 using Amazon.Runtime;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using SOAP.WebService.Core.Configuration.Settings;
 using SOAP.WebService.Core.Interfaces.Configuration;
 using SOAP.WebService.Infrastructure.Database;
@@ -16,7 +20,23 @@ builder.Services.AddSingleton<IAppSettings>(sp =>
 
 var appSettings = builder.Configuration.Get<AppSettings>();
 
-builder.Services.AddCognitoIdentity();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = $"https://cognito-idp.{appSettings.AWS.Region}.amazonaws.com/{appSettings.AWS.UserPoolId}";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            ValidateIssuer = true,
+            ValidIssuer = $"https://cognito-idp.{appSettings.AWS.Region}.amazonaws.com/{appSettings.AWS.UserPoolId}",
+            ValidateAudience = true,
+            ValidAudience = appSettings.AWS.UserPoolClientId,
+            ValidateLifetime = true,
+        };
+    });
+
+var awsConfig = new AmazonCognitoIdentityProviderConfig { RegionEndpoint = RegionEndpoint.GetBySystemName(appSettings.AWS.Region) };
+builder.Services.AddSingleton<IAmazonCognitoIdentityProvider>(new AmazonCognitoIdentityProviderClient(awsConfig));
 
 var databaseSettings = appSettings.DatabaseSettings;
 var connectionString = $"Host={databaseSettings.Url};Port={databaseSettings.Port};Database={databaseSettings.DatabaseName};Username={databaseSettings.Username};Password={databaseSettings.Password}";
@@ -28,8 +48,8 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
