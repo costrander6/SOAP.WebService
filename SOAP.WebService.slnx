@@ -5,4 +5,5 @@
   <Project Path="SOAP.WebService.API/SOAP.WebService.API.csproj" />
   <Project Path="SOAP.WebService.Core/SOAP.WebService.Core.csproj" />
   <Project Path="SOAP.WebService.Infrastructure/SOAP.WebService.Infrastructure.csproj" />
+  <Project Path="SOAP.WebService.Models/SOAP.WebService.Models.csproj" />
 </Solution>

@@ -10,9 +10,11 @@
     <ItemGroup>
       <ProjectReference Include="..\SOAP.WebService.Core\SOAP.WebService.Core.csproj" />
       <ProjectReference Include="..\SOAP.WebService.Infrastructure\SOAP.WebService.Infrastructure.csproj" />
+      <ProjectReference Include="..\SOAP.WebService.Models\SOAP.WebService.Models.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Amazon.AspNetCore.Identity.Cognito" Version="4.0.2" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
