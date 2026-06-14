@@ -1,3 +1,4 @@
+using Amazon.Runtime;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SOAP.WebService.Core.Configuration.Settings;
@@ -15,6 +16,8 @@ builder.Services.AddSingleton<IAppSettings>(sp =>
 
 var appSettings = builder.Configuration.Get<AppSettings>();
 
+builder.Services.AddCognitoIdentity();
+
 var databaseSettings = appSettings.DatabaseSettings;
 var connectionString = $"Host={databaseSettings.Url};Port={databaseSettings.Port};Database={databaseSettings.DatabaseName};Username={databaseSettings.Username};Password={databaseSettings.Password}";
 
@@ -26,6 +29,7 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllers();
 
