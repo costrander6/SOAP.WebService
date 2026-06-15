@@ -60,3 +60,35 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260615223204_AddApiKeyAssociations') THEN
+    ALTER TABLE "WorkflowRuns" RENAME COLUMN "ApiKeyHash" TO "Owner";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260615223204_AddApiKeyAssociations') THEN
+    CREATE TABLE "ApiKeyAssociations" (
+        "Id" uuid NOT NULL,
+        "KeyHash" text NOT NULL,
+        "Owner" text NOT NULL,
+        "CreatedAt" timestamp with time zone NOT NULL,
+        "RevokedAt" timestamp with time zone,
+        CONSTRAINT "PK_ApiKeyAssociations" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260615223204_AddApiKeyAssociations') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260615223204_AddApiKeyAssociations', '10.0.9');
+    END IF;
+END $EF$;
+COMMIT;
+

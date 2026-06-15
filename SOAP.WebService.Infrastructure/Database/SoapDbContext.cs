@@ -8,4 +8,5 @@ public class SoapDbContext(DbContextOptions<SoapDbContext> options) : DbContext(
     public DbSet<WorkflowRun> WorkflowRuns { get; set; }
     public DbSet<ScanResult> ScanResults { get; set; }
     public DbSet<Finding> Findings { get; set; }
+    public DbSet<ApiKeyAssociation> ApiKeyAssociations { get; set; }
 }

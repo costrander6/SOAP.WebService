@@ -2,13 +2,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SOAP.WebService.Core.Entities;
 
-public class ScanResult
+public class ApiKeyAssociation
 {
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public required Guid Id { get; set; }
     
-    public required Guid WorkflowRunId { get; set; }
-    public required string Scanner { get; set; }
-    public required DateTimeOffset Timestamp { get; set; }
+    public required string KeyHash { get; set; }
+    public required string Owner { get; set; }
     public required DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset? RevokedAt { get; set; }
 }
