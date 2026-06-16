@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Amazon.CognitoIdentityProvider;
@@ -5,6 +6,7 @@ using Amazon.CognitoIdentityProvider.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SOAP.WebService.Core.Interfaces.Configuration;
+using SOAP.WebService.Core.Interfaces.Services;
 using SOAP.WebService.Models.Requests;
 using SOAP.WebService.Models.Responses;
 
@@ -12,7 +14,9 @@ namespace SOAP.WebService.API.Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(IAmazonCognitoIdentityProvider cognitoService,
+public class AuthController(
+    IAmazonCognitoIdentityProvider cognitoService,
+    IApiKeyService apiKeyService,
     IAppSettings appSettings) 
     : ControllerBase
 {
@@ -44,19 +48,18 @@ public class AuthController(IAmazonCognitoIdentityProvider cognitoService,
 
     [Authorize]
     [HttpPost("api-key")]
-    public IActionResult CreateApiKey()
+    public async Task<IActionResult> CreateApiKey()
     {
-        var bytes = RandomNumberGenerator.GetBytes(appSettings.ApiKeySettings.KeyLength);
-
-        var base64String = Convert.ToBase64String(bytes)
-            .Replace("+", "-")
-            .Replace("/", "_");
-    
-        var keyLength = appSettings.ApiKeySettings.KeyLength - appSettings.ApiKeySettings.KeyPrefix.Length; 
-
-        var apiKey = appSettings.ApiKeySettings.KeyPrefix + base64String[..keyLength];
+        var sub = User.FindFirstValue(ClaimTypes.NameIdentifier);
         
-        return Ok(new ApiKeyResponse{ ApiKey =  apiKey });
+        if (sub is null)
+        {
+            Console.WriteLine("[AuthController.CreateApiKey] sub not found in token. Returning 401");
+            return Unauthorized();
+        }
+        
+        var apiKeyResponse = await apiKeyService.CreateApiKey(sub);
+        return Ok(apiKeyResponse);
     }
     
     private static string ComputeSecretHash(string username, string clientId, string clientSecret)

@@ -4,7 +4,7 @@ namespace SOAP.WebService.Core.Interfaces.Configuration;
 
 public interface IAppSettings
 {
-    public DatabaseSettings DatabaseSettings { get; set; }
-    public AwsSettings AWS { get; set; }
-    public ApiKeySettings ApiKeySettings { get; set; }
+    DatabaseSettings DatabaseSettings { get; set; }
+    AwsSettings AWS { get; set; }
+    ApiKeySettings ApiKeySettings { get; set; }
 }
