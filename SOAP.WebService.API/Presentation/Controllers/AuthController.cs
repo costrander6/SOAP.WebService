@@ -1,21 +1,27 @@
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SOAP.WebService.Core.Interfaces.Configuration;
+using SOAP.WebService.Core.Interfaces.Services;
 using SOAP.WebService.Models.Requests;
+using SOAP.WebService.Models.Responses;
 
 namespace SOAP.WebService.API.Presentation.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(IAmazonCognitoIdentityProvider cognitoService,
+public class AuthController(
+    IAmazonCognitoIdentityProvider cognitoService,
+    IApiKeyService apiKeyService,
     IAppSettings appSettings) 
     : ControllerBase
 {
     [HttpPost("login")]
-    public async Task<string> Login(LoginRequest loginRequest)
+    public async Task<IActionResult> Login(LoginRequest loginRequest)
     {
         var authParameters = new Dictionary<string, string>
         {
@@ -37,7 +43,23 @@ public class AuthController(IAmazonCognitoIdentityProvider cognitoService,
         
         var response = await cognitoService.InitiateAuthAsync(authRequest);
 
-        return response.AuthenticationResult.IdToken;
+        return Ok(new LoginResponse{ IdToken = response.AuthenticationResult.IdToken });
+    }
+
+    [Authorize]
+    [HttpPost("api-key")]
+    public async Task<IActionResult> CreateApiKey()
+    {
+        var sub = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        if (sub is null)
+        {
+            Console.WriteLine("[AuthController.CreateApiKey] sub not found in token. Returning 401");
+            return Unauthorized();
+        }
+        
+        var apiKeyResponse = await apiKeyService.CreateApiKey(sub);
+        return Ok(apiKeyResponse);
     }
     
     private static string ComputeSecretHash(string username, string clientId, string clientSecret)
