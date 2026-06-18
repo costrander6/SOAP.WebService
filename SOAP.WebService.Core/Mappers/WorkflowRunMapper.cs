@@ -3,7 +3,7 @@ using SOAP.WebService.Models.Responses;
 
 namespace SOAP.WebService.Core.Mappers;
 
-public class WorkflowRunResponseMapper
+public static class WorkflowRunMapper
 {
     public static WorkflowRunResponse MapEntityToResponse(WorkflowRun workflowRun)
     {

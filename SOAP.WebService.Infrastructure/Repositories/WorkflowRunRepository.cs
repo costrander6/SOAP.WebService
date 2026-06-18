@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using SOAP.WebService.Core.Entities;
 using SOAP.WebService.Core.Interfaces.Repositories;
 using SOAP.WebService.Infrastructure.Database;
@@ -10,5 +11,10 @@ public class WorkflowRunRepository(SoapDbContext dbContext) : IWorkflowRunReposi
     {
         dbContext.WorkflowRuns.Add(workflowRun);
         return dbContext.SaveChangesAsync();
+    }
+
+    public Task<WorkflowRun?> Get(Guid id)
+    {
+        return dbContext.WorkflowRuns.FirstOrDefaultAsync(workflowRun => workflowRun.Id == id);
     }
 }

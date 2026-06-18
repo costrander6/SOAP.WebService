@@ -7,11 +7,11 @@ public class WorkflowRun
 {
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public Guid Id { get; set; }
-    
-    public string Owner { get; set; }
-    public string Repo { get; set; }
-    public string Branch { get; set; }
-    public string Commit { get; set; }
+
+    public string Owner { get; set; } = null!;
+    public string Repo { get; set; } = null!;
+    public string Branch { get; set; } = null!;
+    public string Commit { get; set; } = null!;
     public DateTimeOffset CreatedAt { get; set; }
 
     public WorkflowRun() {}
