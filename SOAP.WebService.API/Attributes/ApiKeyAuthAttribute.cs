@@ -13,6 +13,7 @@ public class ApiKeyAuthAttribute : Attribute, IAsyncActionFilter
     {
         if (!context.HttpContext.Request.Headers.TryGetValue("X-Api-Key", out var rawKey))
         {
+            Console.WriteLine("[ApiKeyAuth] Api key header not found");
             context.Result = new UnauthorizedResult();
             return;
         }
@@ -23,6 +24,7 @@ public class ApiKeyAuthAttribute : Attribute, IAsyncActionFilter
         
         if (apiKey is null)
         {
+            Console.WriteLine($"[ApiKeyAuth] No matching Api key hash was found for {keyHash}");
             context.Result = new UnauthorizedResult();
             return;
         }
