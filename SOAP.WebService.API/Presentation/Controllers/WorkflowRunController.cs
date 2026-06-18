@@ -21,6 +21,6 @@ public class WorkflowRunController(IWorkflowRunRepository workflowRunRepository)
 
         await workflowRunRepository.Create(workflowRunEntity);
         
-        return Created($"/api/workflow-run/{workflowRunEntity.Id}", WorkflowRunResponseMapper.MapEntityToResponse(workflowRunEntity));
+        return Created($"/workflow-run/{workflowRunEntity.Id}", WorkflowRunResponseMapper.MapEntityToResponse(workflowRunEntity));
     }
 }
