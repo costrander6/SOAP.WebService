@@ -44,6 +44,7 @@ builder.Services.AddSingleton<IAmazonCognitoIdentityProvider>(new AmazonCognitoI
 
 builder.Services.AddScoped<IApiKeyService, ApiKeyService>();
 builder.Services.AddScoped<IApiKeyAssociationRepository, ApiKeyAssociationRepository>();
+builder.Services.AddScoped<IWorkflowRunRepository, WorkflowRunRepository>();
 
 var databaseSettings = appSettings.DatabaseSettings;
 var connectionString = $"Host={databaseSettings.Url};Port={databaseSettings.Port};Database={databaseSettings.DatabaseName};Username={databaseSettings.Username};Password={databaseSettings.Password}";

@@ -21,7 +21,7 @@ public class AuthController(
     : ControllerBase
 {
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginRequest loginRequest)
+    public async Task<ActionResult<LoginResponse>> Login(LoginRequest loginRequest)
     {
         var authParameters = new Dictionary<string, string>
         {
@@ -48,7 +48,7 @@ public class AuthController(
 
     [Authorize]
     [HttpPost("api-key")]
-    public async Task<IActionResult> CreateApiKey()
+    public async Task<ActionResult<ApiKeyResponse>> CreateApiKey()
     {
         var sub = User.FindFirstValue(ClaimTypes.NameIdentifier);
         
