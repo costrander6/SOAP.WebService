@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using SOAP.WebService.Core.Entities;
 using SOAP.WebService.Core.Interfaces.Repositories;
 using SOAP.WebService.Infrastructure.Database;
@@ -16,5 +17,10 @@ public class FindingRepository(SoapDbContext dbContext) : IFindingRepository
     {
         dbContext.Findings.AddRange(findings);
         return dbContext.SaveChangesAsync();
+    }
+
+    public Task<List<Finding>> GetAllFindingsForScan(Guid scanResultId)
+    {
+        return dbContext.Findings.Where(f => f.ScanResultId == scanResultId).ToListAsync();
     }
 }

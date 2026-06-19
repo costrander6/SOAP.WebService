@@ -5,15 +5,26 @@ namespace SOAP.WebService.Core.Mappers;
 
 public static class ScanResultMapper
 {
-    public static ScanResultReponse MapScanResultAndFindingsToResponse(ScanResult scanResult, IEnumerable<Finding> findings)
+    public static ScanResultResponse MapScanResultAndFindingsToResponse(ScanResult scanResult, IEnumerable<Finding> findings)
     {
-        return new ScanResultReponse
+        return new ScanResultResponse
         {
             WorkflowRunId = scanResult.WorkflowRunId,
             Scanner = scanResult.Scanner,
             Findings = FindingMapper.MapFindingEntitiesToResponses(findings),
             Timestamp = scanResult.Timestamp,
-            CreatedAt = scanResult.CreatedAt,
+            CreatedAt = scanResult.CreatedAt
+        };
+    }
+
+    public static ScanResultResponse MapScanResultToResponse(ScanResult scanResult)
+    {
+        return new ScanResultResponse
+        {
+            WorkflowRunId = scanResult.WorkflowRunId,
+            Scanner = scanResult.Scanner,
+            Timestamp = scanResult.Timestamp,
+            CreatedAt = scanResult.CreatedAt
         };
     }
 }

@@ -1,6 +1,6 @@
 namespace SOAP.WebService.Models.Responses;
 
-public class ScanResultReponse
+public class ScanResultResponse
 {
     public Guid WorkflowRunId { get; set; }
     public string Scanner { get; set; } = null!;

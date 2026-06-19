@@ -18,7 +18,7 @@ public class ScanResultController(
 {
     [ApiKeyAuth]
     [HttpPost]
-    public async Task<ActionResult<ScanResultReponse>> CreateScanResult(ScanResultCreateRequest scanResultCreateRequest)
+    public async Task<ActionResult<ScanResultResponse>> CreateScanResult(ScanResultCreateRequest scanResultCreateRequest)
     {
         var workflowRun = await workflowRunRepository.Get(scanResultCreateRequest.WorkflowRunId);
         if (workflowRun is null) return NotFound();

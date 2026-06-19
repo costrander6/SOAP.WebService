@@ -17,4 +17,13 @@ public class WorkflowRunRepository(SoapDbContext dbContext) : IWorkflowRunReposi
     {
         return dbContext.WorkflowRuns.FirstOrDefaultAsync(workflowRun => workflowRun.Id == id);
     }
+
+    public Task<WorkflowRun?> GetMostRecent(string owner, string repo, string branch)
+    {
+        // inefficient but works for my tiny capstone. Better solution would be adding an index
+        return dbContext.WorkflowRuns
+            .Where(w => w.Owner == owner && w.Repo == repo && w.Branch == branch)
+            .OrderByDescending(w => w.CreatedAt)
+            .FirstOrDefaultAsync();
+    }
 }

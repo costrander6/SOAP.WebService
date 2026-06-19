@@ -46,6 +46,7 @@ builder.Services.AddScoped<IApiKeyAssociationRepository, ApiKeyAssociationReposi
 builder.Services.AddScoped<IWorkflowRunRepository, WorkflowRunRepository>();
 builder.Services.AddScoped<IScanResultRepository, ScanResultRepository>();
 builder.Services.AddScoped<IFindingRepository, FindingRepository>();
+builder.Services.AddScoped<IWorkflowRunDetailsService, WorkflowRunDetailsService>();
 
 var databaseSettings = appSettings.DatabaseSettings;
 var connectionString = $"Host={databaseSettings.Url};Port={databaseSettings.Port};Database={databaseSettings.DatabaseName};Username={databaseSettings.Username};Password={databaseSettings.Password}";
