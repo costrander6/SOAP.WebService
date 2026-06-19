@@ -19,6 +19,12 @@ public class ApiKeyAssociationRepository(SoapDbContext dbContext) : IApiKeyAssoc
             association => association.Owner == owner && association.RevokedAt == null);
     }
 
+    public Task<ApiKeyAssociation?> GetActiveKeyByHash(string hash)
+    {
+        return dbContext.ApiKeyAssociations.FirstOrDefaultAsync(
+            association => association.KeyHash == hash.ToLower() && association.RevokedAt == null);
+    }
+
     public Task<int> Update(ApiKeyAssociation apiKeyAssociation)
     {
         dbContext.ApiKeyAssociations.Update(apiKeyAssociation);

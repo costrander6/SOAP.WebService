@@ -1,16 +1,30 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using SOAP.WebService.Models.Requests;
 
 namespace SOAP.WebService.Core.Entities;
 
 public class Finding
 {
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
-    public required Guid Id { get; set; }
+    public Guid Id { get; set; }
     
-    public required Guid ScanResultId { get; set; }
-    public required string Title { get; set; }
-    public required string Description { get; set; }
-    public required string File { get; set; }
-    public required uint LineStart { get; set; }
-    public required uint LineEnd { get; set; }
+    public Guid ScanResultId { get; set; }
+    public string Title { get; set; } = null!;
+    public string Description { get; set; } = null!;
+    public string File { get; set; } = null!;
+    public uint LineStart { get; set; }
+    public uint LineEnd { get; set; }
+    
+    public Finding() {}
+
+    public Finding(FindingRequest findingRequest, Guid scanResultId)
+    {
+        Id =  Guid.NewGuid();
+        ScanResultId = scanResultId;
+        Title = findingRequest.Title;
+        Description = findingRequest.Description;
+        File = findingRequest.File;
+        LineStart = findingRequest.LineStart;
+        LineEnd = findingRequest.LineEnd;
+    }
 }

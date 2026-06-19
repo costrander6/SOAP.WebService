@@ -1,14 +1,26 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using SOAP.WebService.Models.Requests;
 
 namespace SOAP.WebService.Core.Entities;
 
 public class ScanResult
 {
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
-    public required Guid Id { get; set; }
+    public Guid Id { get; set; }
     
-    public required Guid WorkflowRunId { get; set; }
-    public required string Scanner { get; set; }
-    public required DateTimeOffset Timestamp { get; set; }
-    public required DateTimeOffset CreatedAt { get; set; }
+    public Guid WorkflowRunId { get; set; }
+    public string Scanner { get; set; } = null!;
+    public DateTimeOffset Timestamp { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+    
+    public ScanResult() {}
+
+    public ScanResult(ScanResultCreateRequest scanResultCreateRequest)
+    {
+        Id = Guid.NewGuid();
+        WorkflowRunId = scanResultCreateRequest.WorkflowRunId;
+        Scanner = scanResultCreateRequest.Scanner;
+        Timestamp = scanResultCreateRequest.Timestamp;
+        CreatedAt = DateTimeOffset.UtcNow;
+    }
 }

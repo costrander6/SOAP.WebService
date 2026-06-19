@@ -1,6 +1,5 @@
 using Amazon;
 using Amazon.CognitoIdentityProvider;
-using Amazon.Runtime;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -27,7 +26,7 @@ var appSettings = builder.Configuration.Get<AppSettings>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = $"https://cognito-idp.{appSettings.AWS.Region}.amazonaws.com/{appSettings.AWS.UserPoolId}";
+        options.Authority = $"https://cognito-idp.{appSettings!.AWS.Region}.amazonaws.com/{appSettings.AWS.UserPoolId}";
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
@@ -39,11 +38,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-var awsConfig = new AmazonCognitoIdentityProviderConfig { RegionEndpoint = RegionEndpoint.GetBySystemName(appSettings.AWS.Region) };
+var awsConfig = new AmazonCognitoIdentityProviderConfig { RegionEndpoint = RegionEndpoint.GetBySystemName(appSettings!.AWS.Region) };
 builder.Services.AddSingleton<IAmazonCognitoIdentityProvider>(new AmazonCognitoIdentityProviderClient(awsConfig));
 
 builder.Services.AddScoped<IApiKeyService, ApiKeyService>();
 builder.Services.AddScoped<IApiKeyAssociationRepository, ApiKeyAssociationRepository>();
+builder.Services.AddScoped<IWorkflowRunRepository, WorkflowRunRepository>();
+builder.Services.AddScoped<IScanResultRepository, ScanResultRepository>();
+builder.Services.AddScoped<IFindingRepository, FindingRepository>();
+builder.Services.AddScoped<IWorkflowRunDetailsService, WorkflowRunDetailsService>();
 
 var databaseSettings = appSettings.DatabaseSettings;
 var connectionString = $"Host={databaseSettings.Url};Port={databaseSettings.Port};Database={databaseSettings.DatabaseName};Username={databaseSettings.Username};Password={databaseSettings.Password}";
