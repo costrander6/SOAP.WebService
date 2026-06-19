@@ -6,5 +6,6 @@ public class WorkflowRunResponse
     public string Repo { get; set; } = null!;
     public string Branch { get; set; } = null!;
     public string Commit { get; set; } = null!;
+    public DateTimeOffset Timestamp { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
 }

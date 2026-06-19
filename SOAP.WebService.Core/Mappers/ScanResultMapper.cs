@@ -12,7 +12,6 @@ public static class ScanResultMapper
             WorkflowRunId = scanResult.WorkflowRunId,
             Scanner = scanResult.Scanner,
             Findings = FindingMapper.MapFindingEntitiesToResponses(findings),
-            Timestamp = scanResult.Timestamp,
             CreatedAt = scanResult.CreatedAt
         };
     }
@@ -23,7 +22,6 @@ public static class ScanResultMapper
         {
             WorkflowRunId = scanResult.WorkflowRunId,
             Scanner = scanResult.Scanner,
-            Timestamp = scanResult.Timestamp,
             CreatedAt = scanResult.CreatedAt
         };
     }

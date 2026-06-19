@@ -1,3 +1,5 @@
+using SOAP.WebService.Models.Enums;
+
 namespace SOAP.WebService.Models.Requests;
 
 public class FindingRequest
@@ -7,4 +9,5 @@ public class FindingRequest
     public required string File { get; set; }
     public required uint LineStart { get; set; }
     public required uint LineEnd { get; set; }
+    public required SeverityLevel Severity  { get; set; }
 }

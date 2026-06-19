@@ -24,7 +24,8 @@ public static class FindingMapper
             Description = finding.Description,
             File = finding.File,
             LineStart = finding.LineStart,
-            LineEnd = finding.LineEnd
+            LineEnd = finding.LineEnd,
+            Severity =  finding.Severity,
         };
     }
 }
