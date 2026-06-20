@@ -92,3 +92,35 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260620005724_AddSeverity') THEN
+    ALTER TABLE "ScanResults" DROP COLUMN "Timestamp";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260620005724_AddSeverity') THEN
+    ALTER TABLE "WorkflowRuns" ADD "Timestamp" timestamp with time zone NOT NULL DEFAULT TIMESTAMPTZ '-infinity';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260620005724_AddSeverity') THEN
+    ALTER TABLE "Findings" ADD "Severity" text NOT NULL DEFAULT '';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260620005724_AddSeverity') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260620005724_AddSeverity', '10.0.9');
+    END IF;
+END $EF$;
+COMMIT;
+

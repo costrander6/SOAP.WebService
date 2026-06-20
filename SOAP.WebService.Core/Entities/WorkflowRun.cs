@@ -12,6 +12,7 @@ public class WorkflowRun
     public string Repo { get; set; } = null!;
     public string Branch { get; set; } = null!;
     public string Commit { get; set; } = null!;
+    public DateTimeOffset Timestamp { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
 
     public WorkflowRun() {}
@@ -23,6 +24,7 @@ public class WorkflowRun
         Repo = workflowRunCreateRequest.Repo;
         Branch = workflowRunCreateRequest.Branch;
         Commit = workflowRunCreateRequest.Commit;
+        Timestamp = workflowRunCreateRequest.Timestamp;
         CreatedAt = DateTimeOffset.UtcNow;
     }
 }

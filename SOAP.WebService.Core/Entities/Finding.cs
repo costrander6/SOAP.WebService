@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using SOAP.WebService.Models.Enums;
 using SOAP.WebService.Models.Requests;
 
 namespace SOAP.WebService.Core.Entities;
@@ -14,6 +15,7 @@ public class Finding
     public string File { get; set; } = null!;
     public uint LineStart { get; set; }
     public uint LineEnd { get; set; }
+    public SeverityLevel Severity { get; set; }
     
     public Finding() {}
 
@@ -26,5 +28,6 @@ public class Finding
         File = findingRequest.File;
         LineStart = findingRequest.LineStart;
         LineEnd = findingRequest.LineEnd;
+        Severity = findingRequest.Severity;
     }
 }

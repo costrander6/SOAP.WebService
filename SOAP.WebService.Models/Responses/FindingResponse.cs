@@ -1,3 +1,5 @@
+using SOAP.WebService.Models.Enums;
+
 namespace SOAP.WebService.Models.Responses;
 
 public class FindingResponse
@@ -7,4 +9,5 @@ public class FindingResponse
     public string File { get; set; } = null!;
     public uint LineStart { get; set; }
     public uint LineEnd { get; set; }
+    public SeverityLevel Severity { get; set; }
 }

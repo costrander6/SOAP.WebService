@@ -13,6 +13,7 @@ public static class WorkflowRunMapper
             Repo = workflowRun.Repo,
             Branch = workflowRun.Branch,
             Commit = workflowRun.Commit,
+            Timestamp = workflowRun.Timestamp,
             CreatedAt = workflowRun.CreatedAt
         };
     }

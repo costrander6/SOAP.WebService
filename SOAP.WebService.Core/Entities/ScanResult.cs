@@ -10,7 +10,6 @@ public class ScanResult
     
     public Guid WorkflowRunId { get; set; }
     public string Scanner { get; set; } = null!;
-    public DateTimeOffset Timestamp { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     
     public ScanResult() {}
@@ -20,7 +19,6 @@ public class ScanResult
         Id = Guid.NewGuid();
         WorkflowRunId = scanResultCreateRequest.WorkflowRunId;
         Scanner = scanResultCreateRequest.Scanner;
-        Timestamp = scanResultCreateRequest.Timestamp;
         CreatedAt = DateTimeOffset.UtcNow;
     }
 }
