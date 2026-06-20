@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -29,10 +29,10 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/soap-webservice-api:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/soap-webservice-api:$IMAGE_TAG
-          docker tag $ECR_REGISTRY/soap-webservice-api:$IMAGE_TAG $ECR_REGISTRY/soap-webservice-api:latest
-          docker push $ECR_REGISTRY/soap-webservice-api:latest
+          docker build -t $ECR_REGISTRY/soap-webservice:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/soap-webservice:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/soap-webservice:$IMAGE_TAG $ECR_REGISTRY/soap-webservice:latest
+          docker push $ECR_REGISTRY/soap-webservice:latest
 
       - name: Deploy to EC2 via SSM
         env:
@@ -44,9 +44,9 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --parameters commands='[
               "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}",
-              "docker pull ${{ steps.login-ecr.outputs.registry }}/soap-webservice-api:latest",
+              "docker pull ${{ steps.login-ecr.outputs.registry }}/soap-webservice:latest",
               "docker stop soap-api || true",
               "docker rm soap-api || true",
-              "docker run -d --name soap-api -p 8080:8080 -e ASPNETCORE_ENVIRONMENT=Production ${{ steps.login-ecr.outputs.registry }}/soap-webservice-api:latest"
+              "docker run -d --name soap-api -p 8080:8080 -e ASPNETCORE_ENVIRONMENT=Production ${{ steps.login-ecr.outputs.registry }}/soap-webservice:latest"
             ]' \
             --region us-east-1
