@@ -9,4 +9,13 @@ public class SoapDbContext(DbContextOptions<SoapDbContext> options) : DbContext(
     public DbSet<ScanResult> ScanResults { get; set; }
     public DbSet<Finding> Findings { get; set; }
     public DbSet<ApiKeyAssociation> ApiKeyAssociations { get; set; }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+    
+        modelBuilder.Entity<Finding>()
+            .Property(f => f.Severity)
+            .HasConversion<string>();
+    }
 }

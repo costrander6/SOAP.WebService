@@ -23,6 +23,7 @@ public class WorkflowRunDetailsService(
             Repo =  repo,
             Branch = branch,
             Commit =  mostRecentWorkflow.Commit,
+            Timestamp = mostRecentWorkflow.Timestamp,
             CreatedAt =  mostRecentWorkflow.CreatedAt,
         };
         

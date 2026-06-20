@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Amazon;
 using Amazon.CognitoIdentityProvider;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,7 +15,11 @@ using SOAP.WebService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.Configure<AppSettings>(builder.Configuration);
 

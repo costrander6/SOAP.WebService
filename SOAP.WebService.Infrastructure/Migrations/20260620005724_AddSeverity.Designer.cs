@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SOAP.WebService.Infrastructure.Database;
@@ -11,9 +12,11 @@ using SOAP.WebService.Infrastructure.Database;
 namespace SOAP.WebService.Infrastructure.Migrations
 {
     [DbContext(typeof(SoapDbContext))]
-    partial class SoapDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260620005724_AddSeverity")]
+    partial class AddSeverity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
