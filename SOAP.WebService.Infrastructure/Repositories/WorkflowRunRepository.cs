@@ -23,7 +23,7 @@ public class WorkflowRunRepository(SoapDbContext dbContext) : IWorkflowRunReposi
         // inefficient but works for my tiny capstone. Better solution would be adding an index
         return dbContext.WorkflowRuns
             .Where(w => w.Owner == owner && w.Repo == repo && w.Branch == branch)
-            .OrderByDescending(w => w.CreatedAt)
+            .OrderByDescending(w => w.Timestamp)
             .FirstOrDefaultAsync();
     }
 }
