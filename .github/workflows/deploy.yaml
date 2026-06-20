@@ -1,0 +1,52 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push image to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/soap-webservice-api:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/soap-webservice-api:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/soap-webservice-api:$IMAGE_TAG $ECR_REGISTRY/soap-webservice-api:latest
+          docker push $ECR_REGISTRY/soap-webservice-api:latest
+
+      - name: Deploy to EC2 via SSM
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          aws ssm send-command \
+            --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
+            --document-name "AWS-RunShellScript" \
+            --parameters commands='[
+              "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}",
+              "docker pull ${{ steps.login-ecr.outputs.registry }}/soap-webservice-api:latest",
+              "docker stop soap-api || true",
+              "docker rm soap-api || true",
+              "docker run -d --name soap-api -p 8080:8080 -e ASPNETCORE_ENVIRONMENT=Production ${{ steps.login-ecr.outputs.registry }}/soap-webservice-api:latest"
+            ]' \
+            --region us-east-1

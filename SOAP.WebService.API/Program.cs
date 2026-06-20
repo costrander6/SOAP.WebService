@@ -15,6 +15,9 @@ using SOAP.WebService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if (builder.Environment.IsProduction())
+    builder.Configuration.AddSystemsManager("/soap/prod");
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
