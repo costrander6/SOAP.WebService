@@ -40,8 +40,17 @@ public class AuthController(
             AuthParameters = authParameters,
             AuthFlow = AuthFlowType.USER_PASSWORD_AUTH,
         };
-        
-        var response = await cognitoService.InitiateAuthAsync(authRequest);
+
+        InitiateAuthResponse response;
+
+        try
+        {
+            response = await cognitoService.InitiateAuthAsync(authRequest);
+        }
+        catch (NotAuthorizedException)
+        {
+            return Unauthorized();
+        }
 
         return Ok(new LoginResponse{ IdToken = response.AuthenticationResult.IdToken });
     }
