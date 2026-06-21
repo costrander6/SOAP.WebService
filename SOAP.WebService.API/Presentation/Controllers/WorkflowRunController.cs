@@ -41,6 +41,12 @@ public class WorkflowRunController(
             Console.WriteLine("[WorkflowRunController.GetMostRecentWorkflowRun] sub not found in token. Returning 401");
             return Unauthorized();
         }
+
+        if (string.IsNullOrEmpty(repo))
+        {
+            var allRepoRunDetails = await workflowRunDetailsService.GetCurrentWorkflowRunDetailsAllRepos(sub);
+            return Ok(allRepoRunDetails);
+        }
         
         if (string.IsNullOrWhiteSpace(branch)) branch = "main";
 
@@ -49,6 +55,38 @@ public class WorkflowRunController(
         if (runDetails is null) return NotFound();
 
         return Ok(runDetails);
+    }
 
+    [Authorize]
+    [HttpGet("current/all")]
+    public async Task<IActionResult> GetMostRecentWorkflowRunForAllRepos()
+    {
+        var sub = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        if (sub is null)
+        {
+            Console.WriteLine("[WorkflowRunController.GetMostRecentWorkflowRunForAllRepos] sub not found in token. Returning 401");
+            return Unauthorized();
+        }
+        
+        var workflowRunDetailsResponses = await workflowRunDetailsService.GetCurrentWorkflowRunDetailsAllRepos(sub);
+        return Ok(new {workflowRuns = workflowRunDetailsResponses});
+    }
+
+    [Authorize]
+    [HttpGet("repo/{repo}/branches")]
+    public async Task<IActionResult> GetAllBranchesForRepo(string repo)
+    {
+        var sub = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        if (sub is null)
+        {
+            Console.WriteLine("[WorkflowRunController.GetAllBranchesForRepo] sub not found in token. Returning 401");
+            return Unauthorized();
+        }
+
+        var branches = await workflowRunRepository.GetAllBranches(sub, repo);
+        
+        return Ok(new {branches});
     }
 }

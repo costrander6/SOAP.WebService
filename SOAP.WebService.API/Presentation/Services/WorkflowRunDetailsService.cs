@@ -14,6 +14,26 @@ public class WorkflowRunDetailsService(
     public async Task<WorkflowRunDetailsResponse?> GetMostRecentWorkflowRunDetails(string owner, string repo, string branch)
     {
         Console.WriteLine($"[WorkflowRunDetailsService.GetMostRecentWorkflowRunDetails] Querying for {owner} - {repo} - {branch}");
+        return await GetDetails(owner, repo, branch);
+    }
+
+    public async Task<IEnumerable<WorkflowRunDetailsResponse>> GetCurrentWorkflowRunDetailsAllRepos(string owner)
+    {
+        var repos = await workflowRunRepository.GetAllRepos(owner);
+        List<WorkflowRunDetailsResponse> workflowRunDetails = [];
+
+        foreach (var repo in repos)
+        {
+            var details = await GetDetails(owner, repo, "main");
+            if (details is null) continue;
+            workflowRunDetails.Add(details);
+        }
+
+        return workflowRunDetails;
+    }
+
+    private async Task<WorkflowRunDetailsResponse?> GetDetails(string owner, string repo, string branch)
+    {
         var mostRecentWorkflow = await workflowRunRepository.GetMostRecent(owner, repo, branch);
         if (mostRecentWorkflow is null) return null;
         
@@ -27,7 +47,7 @@ public class WorkflowRunDetailsService(
             CreatedAt =  mostRecentWorkflow.CreatedAt,
         };
         
-        var workflowScanResults = await scanResultRepository.GetWorkflowScanResults(mostRecentWorkflow.Id);
+        var workflowScanResults = await scanResultRepository.GetWorkflowScanResults(workflowRunDetails.Id);
         if (workflowScanResults.Count == 0) return workflowRunDetails;
 
         foreach (var scanResult in workflowScanResults)
