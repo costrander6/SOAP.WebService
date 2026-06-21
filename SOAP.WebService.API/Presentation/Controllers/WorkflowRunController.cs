@@ -41,6 +41,12 @@ public class WorkflowRunController(
             Console.WriteLine("[WorkflowRunController.GetMostRecentWorkflowRun] sub not found in token. Returning 401");
             return Unauthorized();
         }
+
+        if (string.IsNullOrEmpty(repo))
+        {
+            var allRepoRunDetails = await workflowRunDetailsService.GetCurrentWorkflowRunDetailsAllRepos(sub);
+            return Ok(allRepoRunDetails);
+        }
         
         if (string.IsNullOrWhiteSpace(branch)) branch = "main";
 

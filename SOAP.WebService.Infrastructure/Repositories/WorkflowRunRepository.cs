@@ -26,4 +26,13 @@ public class WorkflowRunRepository(SoapDbContext dbContext) : IWorkflowRunReposi
             .OrderByDescending(w => w.Timestamp)
             .FirstOrDefaultAsync();
     }
+    
+    public Task<List<string>> GetAllRepos(string owner)
+    {
+        return dbContext.WorkflowRuns
+            .Where(w => w.Owner == owner)
+            .Select(w => w.Repo)
+            .Distinct()
+            .ToListAsync();
+    }
 }
