@@ -35,4 +35,13 @@ public class WorkflowRunRepository(SoapDbContext dbContext) : IWorkflowRunReposi
             .Distinct()
             .ToListAsync();
     }
+
+    public Task<List<string>> GetAllBranches(string owner, string repo)
+    {
+        return dbContext.WorkflowRuns
+            .Where(w => w.Owner == owner && w.Repo == repo)
+            .Select(w => w.Branch)
+            .Distinct()
+            .ToListAsync();
+    }
 }

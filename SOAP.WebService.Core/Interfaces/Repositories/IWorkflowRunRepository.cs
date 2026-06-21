@@ -8,4 +8,5 @@ public interface IWorkflowRunRepository
     Task<WorkflowRun?> Get(Guid id);
     Task<WorkflowRun?> GetMostRecent(string owner, string repo, string branch);
     Task<List<string>> GetAllRepos(string owner);
+    Task<List<string>> GetAllBranches(string owner, string repo);
 }
