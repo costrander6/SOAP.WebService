@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -22,17 +22,17 @@ jobs:
 
       - name: Login to ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@d539f0932e70871a027e9d5a9d8fc38589180a64 # v2
 
       - name: Build and push image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/soap-webservice:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/soap-webservice:$IMAGE_TAG
-          docker tag $ECR_REGISTRY/soap-webservice:$IMAGE_TAG $ECR_REGISTRY/soap-webservice:latest
-          docker push $ECR_REGISTRY/soap-webservice:latest
+          docker build -t "$ECR_REGISTRY/soap-webservice:$IMAGE_TAG" .
+          docker push "$ECR_REGISTRY/soap-webservice:$IMAGE_TAG"
+          docker tag "$ECR_REGISTRY/soap-webservice:$IMAGE_TAG" "$ECR_REGISTRY/soap-webservice:latest"
+          docker push "$ECR_REGISTRY/soap-webservice:latest"
 
       - name: Deploy to EC2 via SSM
         env:
