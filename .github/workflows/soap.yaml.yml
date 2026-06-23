@@ -1,0 +1,38 @@
+name: Run SOAP
+on:
+  workflow_dispatch:
+    inputs:
+      security_level:
+        required: true
+        type: choice
+        options:
+          - fundamental
+          - essential
+          - advanced
+    pull_request:
+      types: [ opened, synchronize, reopened ]
+      branches:
+        - main
+    push:
+      branches:
+        - main
+jobs:
+  run-soap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine scan level
+        id: scan-level
+        env:
+          INPUT_LEVEL: ${{ inputs.security_level }}
+        run: |
+          if [ "${{ github.event_name }}" == "push" ] || [ "${{ github.event_name }}" == "pull_request" ]; then
+              echo "level=advanced" >> $GITHUB_OUTPUT
+          else
+              echo "level=$INPUT_LEVEL" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
+      - uses: costrander6/SOAP@7129f0f4a918a7c0e1c3964d0fd84161a0466954 # v6.0.3
+        with:
+          security_level: ${{ steps.scan-level.outputs.level }}
+          api_key: ${{ secrets.SOAP_API_KEY }}
