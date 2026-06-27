@@ -1,2 +1,3 @@
 SOAP.WebService.API/appsettings.Docker.json filter=git-crypt diff=git-crypt
+SOAP.WebService.API/appsettings.Development.json filter=git-crypt diff=git-crypt
 compose.yaml filter=git-crypt diff=git-crypt
