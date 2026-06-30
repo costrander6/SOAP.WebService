@@ -15,8 +15,20 @@ using SOAP.WebService.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (builder.Environment.IsProduction())
+if (builder.Environment.IsProduction()){
     builder.Configuration.AddSystemsManager("/soap/prod");
+}
+else {
+    builder.Services.AddCors(options =>
+    {
+        options.AddDefaultPolicy(policy =>
+        {
+            policy.WithOrigins("http://localhost:5173")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+    });
+}
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -41,7 +53,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = true,
             ValidIssuer = $"https://cognito-idp.{appSettings.AWS.Region}.amazonaws.com/{appSettings.AWS.UserPoolId}",
             ValidateAudience = true,
-            ValidAudience = appSettings.AWS.UserPoolClientId,
+            ValidAudiences = [appSettings.AWS.UserPoolClientId, appSettings.AWS.FrontendClientId],
             ValidateLifetime = true,
         };
     });
@@ -66,6 +78,7 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
