@@ -18,23 +18,6 @@ var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.IsProduction()){
     builder.Configuration.AddSystemsManager("/soap/prod");
 }
-else {
-    builder.Services.AddCors(options =>
-    {
-        options.AddDefaultPolicy(policy =>
-        {
-            policy.WithOrigins("http://localhost:5173")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
-    });
-}
-
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
 
 builder.Services.Configure<AppSettings>(builder.Configuration);
 
@@ -42,6 +25,22 @@ builder.Services.AddSingleton<IAppSettings>(sp =>
     sp.GetRequiredService<IOptions<AppSettings>>().Value);
 
 var appSettings = builder.Configuration.Get<AppSettings>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins(appSettings.CorsOrigin)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
