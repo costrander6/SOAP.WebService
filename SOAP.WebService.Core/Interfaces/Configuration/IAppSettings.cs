@@ -7,4 +7,5 @@ public interface IAppSettings
     DatabaseSettings DatabaseSettings { get; set; }
     AwsSettings AWS { get; set; }
     ApiKeySettings ApiKeySettings { get; set; }
+    string CorsOrigin { get; set; }
 }
